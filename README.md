@@ -200,107 +200,91 @@ Wikipedia says
 
 Translating the door example above. First of all we have our `Door` interface and some implementation for it
 
-```php
-interface Door
-{
-    public function getDescription();
+```vala
+interface Door : Object {
+    public abstract void get_description ();
 }
 
-class WoodenDoor implements Door
-{
-    public function getDescription()
-    {
-        echo 'I am a wooden door';
+class WoodenDoor : Object, Door {
+    public void get_description () {
+        print ("I'm a wooden door\n");
     }
 }
 
-class IronDoor implements Door
-{
-    public function getDescription()
-    {
-        echo 'I am an iron door';
+class IronDoor : Object, Door {
+    public void get_description () {
+        print ("I'm a iron door\n");
     }
 }
+
 ```
 Then we have some fitting experts for each door type
 
-```php
-interface DoorFittingExpert
-{
-    public function getDescription();
+```vala
+interface DoorFittingExpert : Object {
+    public abstract void get_description ();
 }
 
-class Welder implements DoorFittingExpert
-{
-    public function getDescription()
-    {
-        echo 'I can only fit iron doors';
+class Welder : Object, DoorFittingExpert {
+    public void get_description () {
+        print ("I can only fit iron doors\n");
     }
 }
 
-class Carpenter implements DoorFittingExpert
-{
-    public function getDescription()
-    {
-        echo 'I can only fit wooden doors';
+class Carpenter : Object, DoorFittingExpert {
+    public void get_description () {
+        print ("I can only fit wooden doors\n");
     }
 }
 ```
 
 Now we have our abstract factory that would let us make family of related objects i.e. wooden door factory would create a wooden door and wooden door fitting expert and iron door factory would create an iron door and iron door fitting expert
-```php
-interface DoorFactory
-{
-    public function makeDoor(): Door;
-    public function makeFittingExpert(): DoorFittingExpert;
+```vala
+interface DoorFactory : Object {
+    public abstract Door make_door ();
+    public abstract DoorFittingExpert make_fitting_expert ();
 }
 
 // Wooden factory to return carpenter and wooden door
-class WoodenDoorFactory implements DoorFactory
-{
-    public function makeDoor(): Door
-    {
-        return new WoodenDoor();
+class WoodenDoorFactory : Object, DoorFactory {
+    public Door make_door () {
+        return new WoodenDoor ();
     }
 
-    public function makeFittingExpert(): DoorFittingExpert
-    {
-        return new Carpenter();
+    public DoorFittingExpert make_fitting_expert () {
+        return new Carpenter ();
     }
 }
 
 // Iron door factory to get iron door and the relevant fitting expert
-class IronDoorFactory implements DoorFactory
-{
-    public function makeDoor(): Door
-    {
-        return new IronDoor();
+class IronDoorFactory : Object, DoorFactory {
+    public Door make_door () {
+        return new IronDoor ();
     }
 
-    public function makeFittingExpert(): DoorFittingExpert
-    {
-        return new Welder();
+    public DoorFittingExpert make_fitting_expert () {
+        return new Welder ();
     }
 }
 ```
 And then it can be used as
-```php
-$woodenFactory = new WoodenDoorFactory();
+```vala
+var wooden_factory = new WoodenDoorFactory ();
 
-$door = $woodenFactory->makeDoor();
-$expert = $woodenFactory->makeFittingExpert();
+var door = wooden_factory.make_door ();
+var expert = wooden_factory.make_fitting_expert ();
 
-$door->getDescription();  // Output: I am a wooden door
-$expert->getDescription(); // Output: I can only fit wooden doors
+door.get_description (); // Output: I am a wooden door
+expert.get_description (); // Output: I can only fit wooden doors
 
 // Same for Iron Factory
-$ironFactory = new IronDoorFactory();
+var iron_factory = new IronDoorFactory ();
 
-$door = $ironFactory->makeDoor();
-$expert = $ironFactory->makeFittingExpert();
+door = iron_factory.make_door ();
+expert = iron_factory.make_fitting_expert ();
 
-$door->getDescription();  // Output: I am an iron door
-$expert->getDescription(); // Output: I can only fit iron doors
+door.get_description (); // Output: I am an iron door
+expert.get_description (); // Output: I can only fit iron doors
 ```
 
 As you can see the wooden door factory has encapsulated the `carpenter` and the `wooden door` also iron door factory has encapsulated the `iron door` and `welder`. And thus it had helped us make sure that for each of the created door, we do not get a wrong fitting expert.   
