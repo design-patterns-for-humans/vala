@@ -307,8 +307,7 @@ Wikipedia says
 Having said that let me add a bit about what telescoping constructor anti-pattern is. At one point or the other we have all seen a constructor like below:
 
 ```vala
-public Burger (int size, bool cheese = true, bool pepperoni = true, bool tomato = false, bool lettuce = true)
-{
+public Burger (int size, bool cheese = true, bool pepperoni = true, bool tomato = false, bool lettuce = true) {
 }
 ```
 
@@ -493,7 +492,7 @@ public class President : Object {
         return instance;
     }
 
-    // No default clone or unserialize methods.
+    // No default clone and unserialize methods.
 }
 ```
 Then in order to use
@@ -539,71 +538,62 @@ Consider a game where there is a hunter and he hunts lions.
 
 First we have an interface `Lion` that all types of lions have to implement
 
-```php
-interface Lion
-{
-    public function roar();
+```vala
+interface Lion {
+    public abstract void roar ();
 }
 
-class AfricanLion implements Lion
-{
-    public function roar()
-    {
+class AfricanLion: Lion {
+    public void roar () {
+
     }
 }
 
-class AsianLion implements Lion
-{
-    public function roar()
-    {
+class AsiaLion: Lion {
+    public void roar () {
+
     }
 }
 ```
 And hunter expects any implementation of `Lion` interface to hunt.
-```php
-class Hunter
-{
-    public function hunt(Lion $lion)
-    {
+```vala
+class Hunter {
+    public void hunt (Lion lion) {
+
     }
 }
 ```
 
 Now let's say we have to add a `WildDog` in our game so that hunter can hunt that also. But we can't do that directly because dog has a different interface. To make it compatible for our hunter, we will have to create an adapter that is compatible
 
-```php
+```vala
 // This needs to be added to the game
-class WildDog
-{
-    public function bark()
-    {
+class WildDog {
+    public void bark () {
     }
 }
 
 // Adapter around wild dog to make it compatible with our game
-class WildDogAdapter implements Lion
-{
-    protected $dog;
+class WildDogAdapter: Lion {
+    protected WildDog dog;
 
-    public function __construct(WildDog $dog)
-    {
-        $this->dog = $dog;
+    public WildDogAdapter (WildDog dog) {
+        this.dog = dog;
     }
 
-    public function roar()
-    {
-        $this->dog->bark();
+    public void roar () {
+        dog.bark ();
     }
 }
 ```
 And now the `WildDog` can be used in our game using `WildDogAdapter`.
 
-```php
-$wildDog = new WildDog();
-$wildDogAdapter = new WildDogAdapter($wildDog);
+```vala
+var wild_dog = new WildDog ();
+var wild_dog_adapter = new WildDogAdapter (wild_dog);
 
-$hunter = new Hunter();
-$hunter->hunt($wildDogAdapter);
+var hunter = new Hunter ();
+hunter.hunt (wild_dog_adapter);
 ```
 
 🚡 Bridge
