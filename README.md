@@ -306,8 +306,8 @@ Wikipedia says
 
 Having said that let me add a bit about what telescoping constructor anti-pattern is. At one point or the other we have all seen a constructor like below:
 
-```php
-public function __construct($size, $cheese = true, $pepperoni = true, $tomato = false, $lettuce = true)
+```vala
+public Burger (int size, bool cheese = true, bool pepperoni = true, bool tomato = false, bool lettuce = true)
 {
 }
 ```
@@ -318,89 +318,80 @@ As you can see; the number of constructor parameters can quickly get out of hand
 
 The sane alternative is to use the builder pattern. First of all we have our burger that we want to make
 
-```php
-class Burger
-{
-    protected $size;
+```vala
+class Burger {
+    protected int size;
+    
+    protected bool cheese = false;
+    protected bool pepperoni = false;
+    protected bool lettuce = false;
+    protected bool tomato = false;
 
-    protected $cheese = false;
-    protected $pepperoni = false;
-    protected $lettuce = false;
-    protected $tomato = false;
-
-    public function __construct(BurgerBuilder $builder)
-    {
-        $this->size = $builder->size;
-        $this->cheese = $builder->cheese;
-        $this->pepperoni = $builder->pepperoni;
-        $this->lettuce = $builder->lettuce;
-        $this->tomato = $builder->tomato;
+    public Burger (BurgerBuilder builder) {
+        size = builder.size;
+        cheese = builder.cheese;
+        pepperoni = builder.pepperoni;
+        lettuce = builder.lettuce;
+        tomato = builder.tomato;
     }
 }
 ```
 
 And then we have the builder
 
-```php
-class BurgerBuilder
-{
-    public $size;
+```vala
+class BurgerBuilder {
+    public int size;
 
-    public $cheese = false;
-    public $pepperoni = false;
-    public $lettuce = false;
-    public $tomato = false;
+    public bool cheese = false;
+    public bool pepperoni = false;
+    public bool lettuce = false;
+    public bool tomato = false;
 
-    public function __construct(int $size)
-    {
-        $this->size = $size;
+    public BurgerBuilder (int size) {
+        this.size = size;
     }
 
-    public function addPepperoni()
-    {
-        $this->pepperoni = true;
-        return $this;
+    public BurgerBuilder add_cheese () {
+        cheese = true;
+        return this;
+    } 
+
+    public BurgerBuilder add_pepperoni () {
+        pepperoni = true;
+        return this;
+    } 
+
+    public BurgerBuilder add_lettuce () {
+        lettuce = true;
+        return this;
     }
 
-    public function addLettuce()
-    {
-        $this->lettuce = true;
-        return $this;
+    public BurgerBuilder add_tomato () {
+        tomato = true;
+        return this;
     }
 
-    public function addCheese()
-    {
-        $this->cheese = true;
-        return $this;
-    }
-
-    public function addTomato()
-    {
-        $this->tomato = true;
-        return $this;
-    }
-
-    public function build(): Burger
-    {
-        return new Burger($this);
+    public Burger build () {
+        return new Burger (this);
     }
 }
 ```
 And then it can be used as:
 
-```php
-$burger = (new BurgerBuilder(14))
-                    ->addPepperoni()
-                    ->addLettuce()
-                    ->addTomato()
-                    ->build();
+```vala
+var burger = (new BurgerBuilder (14))
+					.add_pepperoni ()
+				  	.add_lettuce ()
+				  	.add_tomato ()
+				  	.build ();
 ```
 
 **When to use?**
 
 When there could be several flavors of an object and to avoid the constructor telescoping. The key difference from the factory pattern is that; factory pattern is to be used when the creation is a one step process while builder pattern is to be used when the creation is a multi step process.
 
-🐑 Prototype
+🐑 Prototype (CONTROVERSIAL AND NO STANDARD CLONE METHOD IN VALA)
 ------------
 Real world example
 > Remember dolly? The sheep that was cloned! Lets not get into the details but the key point here is that it is all about cloning
