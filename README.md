@@ -381,10 +381,10 @@ And then it can be used as:
 
 ```vala
 var burger = (new BurgerBuilder (14))
-					.add_pepperoni ()
-				  	.add_lettuce ()
-				  	.add_tomato ()
-				  	.build ();
+	.add_pepperoni ()
+	.add_lettuce ()
+	.add_tomato ()
+	.build ();
 ```
 
 **When to use?**
