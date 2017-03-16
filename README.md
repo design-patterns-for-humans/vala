@@ -65,50 +65,43 @@ Wikipedia says
 **Programmatic Example**
 
 First of all we have a door interface and the implementation
-```php
-interface Door
-{
-    public function getWidth(): float;
-    public function getHeight(): float;
+```vala
+interface Door : Object {
+    public abstract float get_width ();
+    public abstract float get_height ();
 }
 
-class WoodenDoor implements Door
-{
-    protected $width;
-    protected $height;
+class WoodenDoor: Object, Door {
+    protected float width;
+    protected float height;
 
-    public function __construct(float $width, float $height)
-    {
-        $this->width = $width;
-        $this->height = $height;
+    public WoodenDoor (float width, float height) {
+        this.width = width;
+        this.height = height;
     }
 
-    public function getWidth(): float
-    {
-        return $this->width;
+    public float get_width () {
+        return width;
     }
 
-    public function getHeight(): float
-    {
-        return $this->height;
+    public float get_height () {
+        return height;
     }
 }
 ```
 Then we have our door factory that makes the door and returns it
-```php
-class DoorFactory
-{
-    public static function makeDoor($width, $height): Door
-    {
-        return new WoodenDoor($width, $height);
+```vala
+class DoorFactory {
+    public static Door make_door (float width, float height) {
+        return new WoodenDoor (width, height);
     }
 }
 ```
 And then it can be used as
-```php
-$door = DoorFactory::makeDoor(100, 200);
-echo 'Width: ' . $door->getWidth();
-echo 'Height: ' . $door->getHeight();
+```vala
+var door = DoorFactory.make_door (100,200);
+print ("width: %f\n", door.get_width ());
+print ("height: %f\n", door.get_height ());
 ```
 
 **When to Use?**
