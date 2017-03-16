@@ -124,72 +124,60 @@ Wikipedia says
 
 Taking our hiring manager example above. First of all we have an interviewer interface and some implementations for it
 
-```php
-interface Interviewer
-{
-    public function askQuestions();
+```vala
+interface Interviewer : Object {
+    public abstract void ask_questions ();
 }
 
-class Developer implements Interviewer
-{
-    public function askQuestions()
-    {
-        echo 'Asking about design patterns!';
+class Developer : Object, Interviewer {
+    public void ask_questions () {
+        print ("Asking questions about patterns!\n");
     }
 }
 
-class CommunityExecutive implements Interviewer
-{
-    public function askQuestions()
-    {
-        echo 'Asking about community building';
+class CommunityExecutive : Object, Interviewer {
+    public void ask_questions () {
+        print ("Asking questions about community building.\n");
     }
 }
 ```
 
 Now let us create our `HiringManager`
 
-```php
-abstract class HiringManager
-{
+```vala
+abstract class HiringManager {
+    // Factory Method
+    public abstract Interviewer make_interviewer ();
 
-    // Factory method
-    abstract public function makeInterviewer(): Interviewer;
-
-    public function takeInterview()
-    {
-        $interviewer = $this->makeInterviewer();
-        $interviewer->askQuestions();
+    public void take_interview () {
+        var interviewer = this.make_interviewer ();
+        interviewer.ask_questions ();
     }
 }
 
 ```
 Now any child can extend it and provide the required interviewer
-```php
-class DevelopmentManager extends HiringManager
-{
-    public function makeInterviewer(): Interviewer
-    {
-        return new Developer();
+```vala
+class DevelopmentManager : HiringManager {
+    public override Interviewer make_interviewer () {
+        return new Developer ();
     }
 }
 
-class MarketingManager extends HiringManager
-{
-    public function makeInterviewer(): Interviewer
-    {
-        return new CommunityExecutive();
+class MarktingManager : HiringManager {
+    public override Interviewer make_interviewer () {
+        return new CommunityExecutive ();
     }
 }
 ```
 and then it can be used as
 
-```php
-$devManager = new DevelopmentManager();
-$devManager->takeInterview(); // Output: Asking about design patterns
+```vala
+var dev_manager = new DevelopmentManager ();
+dev_manager.take_interview (); // Output: Asking about design patterns
 
-$marketingManager = new MarketingManager();
-$marketingManager->takeInterview(); // Output: Asking about community building.
+var marketing_manager = new MarktingManager ();
+marketing_manager.take_interview (); // Output: Asking about community building
 ```
 
 **When to use?**
