@@ -164,7 +164,7 @@ class DevelopmentManager : HiringManager {
     }
 }
 
-class MarktingManager : HiringManager {
+class MarketingManager : HiringManager {
     public override Interviewer make_interviewer () {
         return new CommunityExecutive ();
     }
@@ -176,7 +176,7 @@ and then it can be used as
 var dev_manager = new DevelopmentManager ();
 dev_manager.take_interview (); // Output: Asking about design patterns
 
-var marketing_manager = new MarktingManager ();
+var marketing_manager = new MarketingManager ();
 marketing_manager.take_interview (); // Output: Asking about community building
 ```
 
