@@ -613,82 +613,70 @@ Wikipedia says
 
 Translating our WebPage example from above. Here we have the `WebPage` hierarchy
 
-```php
-interface WebPage
-{
-    public function __construct(Theme $theme);
-    public function getContent();
+```vala
+interface WebPage {
+    //abstract constructor doesn't exist, at least that i know of
+    public abstract string get_content ();
 }
 
-class About implements WebPage
-{
-    protected $theme;
+class About : WebPage {
+    protected Theme theme;
 
-    public function __construct(Theme $theme)
-    {
-        $this->theme = $theme;
-    }
+    public About (Theme theme) {
+        this.theme = theme; 
+    } 
 
-    public function getContent()
-    {
-        return "About page in " . $this->theme->getColor();
+    public string get_content () {
+        return "About page in " + theme.get_color () + "\n";
     }
 }
 
-class Careers implements WebPage
-{
-    protected $theme;
+class Careers : WebPage {
+    protected Theme theme;
 
-    public function __construct(Theme $theme)
-    {
-        $this->theme = $theme;
-    }
+    public Careers (Theme theme) {
+        this.theme = theme; 
+    } 
 
-    public function getContent()
-    {
-        return "Careers page in " . $this->theme->getColor();
+    public string get_content () {
+        return "Careers page in " + theme.get_color () + "\n";
     }
 }
 ```
 And the separate theme hierarchy
-```php
+```vala
 
-interface Theme
-{
-    public function getColor();
+interface Theme : Object {
+    public abstract string get_color ();
 }
 
-class DarkTheme implements Theme
-{
-    public function getColor()
-    {
-        return 'Dark Black';
+class DarkTheme : Object, Theme {
+    public string get_color () {
+        return "Dark Black";
     }
 }
-class LightTheme implements Theme
-{
-    public function getColor()
-    {
-        return 'Off white';
+
+class LightTheme : Object, Theme {
+    public string get_color () {
+        return "Off White";
     }
 }
-class AquaTheme implements Theme
-{
-    public function getColor()
-    {
-        return 'Light blue';
+
+class AquaTheme : Object, Theme {
+    public string get_color () {
+        return "Light blue";
     }
 }
 ```
 And both the hierarchies
-```php
-$darkTheme = new DarkTheme();
+```vala
+var dark_theme = new DarkTheme ();
 
-$about = new About($darkTheme);
-$careers = new Careers($darkTheme);
+var about = new About (dark_theme); 
+var careers = new Careers (dark_theme); 
 
-echo $about->getContent(); // "About page in Dark Black";
-echo $careers->getContent(); // "Careers page in Dark Black";
+print ("%s", about.get_content ()); // "About page in Dark Black";
+print ("%s", careers.get_content ()); // "Careers page in Dark Black";
 ```
 
 🌿 Composite
