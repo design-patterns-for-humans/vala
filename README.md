@@ -1859,73 +1859,62 @@ Let's take an example of text editor, it lets you change the state of text that 
 
 First of all we have our state interface and some state implementations
 
-```php
-interface WritingState
-{
-    public function write(string $words);
+```vala
+interface WritingState : Object {
+    public abstract void write (string words);
 }
 
-class UpperCase implements WritingState
-{
-    public function write(string $words)
-    {
-        echo strtoupper($words);
+class UpperCase : Object, WritingState {
+    public void write (string words) {
+        print ("%s\n", words.up ());
     }
 }
 
-class LowerCase implements WritingState
-{
-    public function write(string $words)
-    {
-        echo strtolower($words);
+class LowerCase : Object, WritingState {
+    public void write (string words) {
+        print ("%s\n", words.down ());
     }
 }
 
-class Default implements WritingState
-{
-    public function write(string $words)
-    {
-        echo $words;
+
+class Default : Object, WritingState {
+    public void write (string words) {
+        print ("%s\n", words);
     }
 }
 ```
 Then we have our editor
-```php
-class TextEditor
-{
-    protected $state;
+```vala
+class TextEditor {
+    protected WritingState state;
 
-    public function __construct(WritingState $state)
-    {
-        $this->state = $state;
+    public TextEditor (WritingState state) {
+        this.state = state;
     }
 
-    public function setState(WritingState $state)
-    {
-        $this->state = $state;
+    public void set_state (WritingState state) {
+        this.state = state;
     }
 
-    public function type(string $words)
-    {
-        $this->state->write($words);
+    public void type (string words) {
+        state.write (words);
     }
 }
 ```
 And then it can be used as
-```php
-$editor = new TextEditor(new Default());
+```vala
+var editor = new TextEditor (new Default ());
 
-$editor->type('First line');
+editor.type ("First line");
 
-$editor->setState(new UpperCase());
+editor.set_state (new UpperCase ());
 
-$editor->type('Second line');
-$editor->type('Third line');
+editor.type ("Second line");
+editor.type ("Third line");
 
-$editor->setState(new LowerCase());
-
-$editor->type('Fourth line');
-$editor->type('Fifth line');
+editor.set_state (new LowerCase ());
+editor.type ("Fourth line");
+editor.type ("Fifth line");
 
 // Output:
 // First line
