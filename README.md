@@ -1135,69 +1135,57 @@ Wikipedia says
 
 Translating our account example above. First of all we have a base account having the logic for chaining the accounts together and some accounts
 
-```php
-abstract class Account
-{
-    protected $successor;
-    protected $balance;
+```vala
+public errordomain OurError {
+    PAY_ERROR 
+}
 
-    public function setNext(Account $account)
-    {
-        $this->successor = $account;
+abstract class Account : Object {
+    protected Account? successor = null;
+    protected float balance;
+
+    public void set_next (Account account) {
+        successor = account;
     }
 
-    public function pay(float $amountToPay)
-    {
-        if ($this->canPay($amountToPay)) {
-            echo sprintf('Paid %s using %s' . PHP_EOL, $amountToPay, get_called_class());
-        } elseif ($this->successor) {
-            echo sprintf('Cannot pay using %s. Proceeding ..' . PHP_EOL, get_called_class());
-            $this->successor->pay($amountToPay);
+    public void pay (float ammount_to_pay) throws OurError {
+        if (can_pay (ammount_to_pay)) {
+            print ("Paid %f using %s\n", ammount_to_pay, get_type ().name ()); 
+        } else if (successor != null) {
+            print ("Cannot pay using %s, Proceeding ..\n", get_type ().name ()); 
+            successor.pay (ammount_to_pay);
         } else {
-            throw new Exception('None of the accounts have enough balance');
+                throw new OurError.PAY_ERROR ("None of the accounts have enough balance");
         }
     }
 
-    public function canPay($amount): bool
-    {
-        return $this->balance >= $amount;
+    public bool can_pay (float ammount) {
+        return balance >= ammount;
     }
 }
 
-class Bank extends Account
-{
-    protected $balance;
-
-    public function __construct(float $balance)
-    {
-        $this->balance = $balance;
+class Bank : Account {
+    public Bank (float balance) {
+        this.balance = balance;
     }
 }
 
-class Paypal extends Account
-{
-    protected $balance;
-
-    public function __construct(float $balance)
-    {
-        $this->balance = $balance;
+class Paypal : Account {
+    public Paypal (float balance) {
+        this.balance = balance;
     }
 }
 
-class Bitcoin extends Account
-{
-    protected $balance;
-
-    public function __construct(float $balance)
-    {
-        $this->balance = $balance;
+class Bitcoin : Account {
+    public Bitcoin (float balance) {
+        this.balance = balance;
     }
 }
 ```
 
 Now let's prepare the chain using the links defined above (i.e. Bank, Paypal, Bitcoin)
 
-```php
+```vala
 // Let's prepare a chain like below
 //      $bank->$paypal->$bitcoin
 //
@@ -1205,15 +1193,19 @@ Now let's prepare the chain using the links defined above (i.e. Bank, Paypal, Bi
 //      If bank can't pay then paypal
 //      If paypal can't pay then bit coin
 
-$bank = new Bank(100);          // Bank with balance 100
-$paypal = new Paypal(200);      // Paypal with balance 200
-$bitcoin = new Bitcoin(300);    // Bitcoin with balance 300
+var bank = new Bank (100); 		// Bank with balance 100
+var paypal = new Paypal (200); 	// Paypal with balance 200
+var bitcoin = new Bitcoin (300); // Bitcoin with balance 300
 
-$bank->setNext($paypal);
-$paypal->setNext($bitcoin);
+bank.set_next (paypal);
+paypal.set_next (bitcoin);
 
 // Let's try to pay using the first priority i.e. bank
-$bank->pay(259);
+try {
+  bank.pay (259);
+} catch (OurError e) {
+  stderr.printf ("%s\n", e.message);
+}
 
 // Output will be
 // ==============
