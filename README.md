@@ -1507,74 +1507,66 @@ Lets take an example of text editor which keeps saving the state from time to ti
 
 First of all we have our memento object that will be able to hold the editor state
 
-```php
-class EditorMemento
-{
-    protected $content;
+```vala
+class EditorMemento {
+    protected string content;
 
-    public function __construct(string $content)
-    {
-        $this->content = $content;
+    public EditorMemento (string content) {
+        this.content = content;
     }
 
-    public function getContent()
-    {
-        return $this->content;
+    public string get_content () {
+        return content;
     }
 }
 ```
 
 Then we have our editor i.e. originator that is going to use memento object
 
-```php
-class Editor
-{
-    protected $content = '';
+```vala
+class Editor {
+    protected string content = "";
 
-    public function type(string $words)
-    {
-        $this->content = $this->content . ' ' . $words;
+    public void type (string words) {
+        content = content + " " + words;
     }
 
-    public function getContent()
-    {
-        return $this->content;
+    public string get_content () {
+        return content;
     }
 
-    public function save()
-    {
-        return new EditorMemento($this->content);
+    public EditorMemento save () {
+        return new EditorMemento (content);
     }
 
-    public function restore(EditorMemento $memento)
-    {
-        $this->content = $memento->getContent();
+    public void restore (EditorMemento memento) {
+        content = memento.get_content ();
     }
 }
 ```
 
 And then it can be used as
 
-```php
-$editor = new Editor();
+```vala
+var editor = new Editor ();
 
 // Type some stuff
-$editor->type('This is the first sentence.');
-$editor->type('This is second.');
+editor.type ("This is the first sentence.");
+editor.type ("This is second."); 
 
 // Save the state to restore to : This is the first sentence. This is second.
-$saved = $editor->save();
+var saved = editor.save ();
 
 // Type some more
-$editor->type('And this is third.');
+editor.type ("And this is third.");
 
 // Output: Content before Saving
-echo $editor->getContent(); // This is the first sentence. This is second. And this is third.
+print ("%s\n", editor.get_content ());
 
 // Restoring to last saved state
-$editor->restore($saved);
+editor.restore (saved);
 
-$editor->getContent(); // This is the first sentence. This is second.
+print ("%s\n", editor.get_content ());
 ```
 
 😎 Observer
