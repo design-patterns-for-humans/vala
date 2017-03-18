@@ -1230,102 +1230,86 @@ Wikipedia says
 **Programmatic Example**
 
 First of all we have the receiver that has the implementation of every action that could be performed
-```php
+```vala
 // Receiver
-class Bulb
-{
-    public function turnOn()
-    {
-        echo "Bulb has been lit";
+class Bulb {
+    public void turn_on () {
+        print ("Bulb has been lit\n");
     }
 
-    public function turnOff()
-    {
-        echo "Darkness!";
+    public void turn_off () {
+        print ("Darkness!\n");
     }
 }
 ```
 then we have an interface that each of the commands are going to implement and then we have a set of commands
-```php
-interface Command
-{
-    public function execute();
-    public function undo();
-    public function redo();
+```vala
+interface Command {
+    public abstract void execute ();
+    public abstract void undo ();
+    public abstract void redo ();
 }
 
 // Command
-class TurnOn implements Command
-{
-    protected $bulb;
+class TurnOn : Command {
+    protected Bulb bulb;
 
-    public function __construct(Bulb $bulb)
-    {
-        $this->bulb = $bulb;
+    public TurnOn (Bulb bulb) {
+        this.bulb = bulb;
     }
 
-    public function execute()
-    {
-        $this->bulb->turnOn();
+    public void execute () {
+        bulb.turn_on ();
     }
 
-    public function undo()
-    {
-        $this->bulb->turnOff();
+    public void undo () {
+        bulb.turn_off ();
     }
 
-    public function redo()
-    {
-        $this->execute();
+    public void redo () {
+        execute ();
     }
 }
 
-class TurnOff implements Command
-{
-    protected $bulb;
+class TurnOff : Command {
+    protected Bulb bulb;
 
-    public function __construct(Bulb $bulb)
-    {
-        $this->bulb = $bulb;
+    public TurnOff (Bulb bulb) {
+        this.bulb = bulb;
     }
 
-    public function execute()
-    {
-        $this->bulb->turnOff();
+    public void execute () {
+        bulb.turn_off ();
     }
 
-    public function undo()
-    {
-        $this->bulb->turnOn();
+    public void undo () {
+        bulb.turn_on ();
     }
 
-    public function redo()
-    {
-        $this->execute();
+    public void redo () {
+        execute ();
     }
 }
 ```
 Then we have an `Invoker` with whom the client will interact to process any commands
-```php
+```vala
 // Invoker
-class RemoteControl
-{
-    public function submit(Command $command)
-    {
-        $command->execute();
+class RemoteControl {
+    public void submit (Command command) {
+        command.execute ();
     }
 }
 ```
 Finally let's see how we can use it in our client
-```php
-$bulb = new Bulb();
+```vala
+var bulb = new Bulb ();
 
-$turnOn = new TurnOn($bulb);
-$turnOff = new TurnOff($bulb);
+var turn_on = new TurnOn (bulb);
+var turn_off= new TurnOff (bulb);
 
-$remote = new RemoteControl();
-$remote->submit($turnOn); // Bulb has been lit!
-$remote->submit($turnOff); // Darkness!
+var remote = new RemoteControl ();
+remote.submit (turn_on); // Bulb has been lit!
+remote.submit (turn_off); // Darkness!
 ```
 
 Command pattern can also be used to implement a transaction based system. Where you keep maintaining the history of commands as soon as you execute them. If the final command is successfully executed, all good otherwise just iterate through the history and keep executing the `undo` on all the executed commands.
