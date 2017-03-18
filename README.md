@@ -1047,64 +1047,55 @@ Wikipedia says
 
 Taking our security door example from above. Firstly we have the door interface and an implementation of door
 
-```php
-interface Door
-{
-    public function open();
-    public function close();
+```vala
+interface Door : Object {
+    public abstract void open ();
+    public abstract void close ();
 }
 
-class LabDoor implements Door
-{
-    public function open()
-    {
-        echo "Opening lab door";
+class LabDoor : Object, Door {
+    public void open () {
+        print ("Opening lab door\n");
     }
 
-    public function close()
-    {
-        echo "Closing the lab door";
+    public void close () {
+        print ("Closing the lab door\n");
     }
 }
 ```
 Then we have a proxy to secure any doors that we want
-```php
-class Security
-{
-    protected $door;
+```vala
+class Security : Object {
+    protected Door door;
 
-    public function __construct(Door $door)
-    {
-        $this->door = $door;
+    public Security (Door door) {
+        this.door = door;
     }
 
-    public function open($password)
-    {
-        if ($this->authenticate($password)) {
-            $this->door->open();
+    public void open (string password) {
+        if (authenticate (password)) {
+            door.open ();
         } else {
-            echo "Big no! It ain't possible.";
+            print ("Big no! It ain't passible.\n");
         }
     }
 
-    public function authenticate($password)
-    {
-        return $password === '$ecr@t';
+    public bool authenticate (string password) {
+        return password == "$ecr@t";
     }
 
-    public function close()
-    {
-        $this->door->close();
+    public void close () {
+        door.close ();
     }
 }
 ```
 And here is how it can be used
-```php
-$door = new Security(new LabDoor());
-$door->open('invalid'); // Big no! It ain't possible.
+```vala
+var door = new Security (new LabDoor ());
+door.open ("invalid"); // Big no! It ain't possible.
 
-$door->open('$ecr@t'); // Opening lab door
-$door->close(); // Closing lab door
+door.open ("$ecr@t"); // Opening lab door
+door.close (); // Closing lab door
 ```
 Yet another example would be some sort of data-mapper implementation. For example, I recently made an ODM (Object Data Mapper) for MongoDB using this pattern where I wrote a proxy around mongo classes while utilizing the magic method `__call()`. All the method calls were proxied to the original mongo class and result retrieved was returned as it is but in case of `find` or `findOne` data was mapped to the required class objects and the object was returned instead of `Cursor`.
 
