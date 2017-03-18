@@ -1330,94 +1330,76 @@ Wikipedia says
 
 In PHP it is quite easy to implement using SPL (Standard PHP Library). Translating our radio stations example from above. First of all we have `RadioStation`
 
-```php
-class RadioStation
-{
-    protected $frequency;
+```vala
+class RadioStation {
+    protected float frequency;
 
-    public function __construct(float $frequency)
-    {
-        $this->frequency = $frequency;
+    public RadioStation (float frequency) {
+        this.frequency = frequency;
     }
 
-    public function getFrequency(): float
-    {
-        return $this->frequency;
+    public float get_frequency () {
+        return frequency;
     }
 }
 ```
 Then we have our iterator
 
-```php
-use Countable;
-use Iterator;
+```vala
+using Gee; 
 
-class StationList implements Countable, Iterator
-{
-    /** @var RadioStation[] $stations */
-    protected $stations = [];
+class StationList : Object, Traversable <RadioStation>, Iterable<RadioStation> {
+    protected ArrayList<RadioStation> stations = new ArrayList<RadioStation> ();
+    
+    public delegate bool ForallFunc (owned RadioStation r);
 
-    /** @var int $counter */
-    protected $counter;
-
-    public function addStation(RadioStation $station)
-    {
-        $this->stations[] = $station;
+    public void add_station (RadioStation station) {
+        stations.add (station);
     }
 
-    public function removeStation(RadioStation $toRemove)
-    {
-        $toRemoveFrequency = $toRemove->getFrequency();
-        $this->stations = array_filter($this->stations, function (RadioStation $station) use ($toRemoveFrequency) {
-            return $station->getFrequency() !== $toRemoveFrequency;
-        });
+    public bool remove_station (RadioStation to_remove) {
+        foreach (RadioStation station in stations) {
+            if (station.get_frequency () == to_remove.get_frequency ()) {
+                stations.remove (station);
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    public function count(): int
-    {
-        return count($this->stations);
+    public int count () {
+        return stations.size;
     }
 
-    public function current(): RadioStation
-    {
-        return $this->stations[$this->counter];
+    public Type element_type {
+        get { return typeof (RadioStation); }
     }
 
-    public function key()
-    {
-        return $this->counter;
+    public bool @foreach (ForallFunc f) {
+        // ... 
+        return true;
     }
 
-    public function next()
-    {
-        $this->counter++;
-    }
-
-    public function rewind()
-    {
-        $this->counter = 0;
-    }
-
-    public function valid(): bool
-    {
-        return isset($this->stations[$this->counter]);
+    public Iterator<RadioStation> iterator () {
+        return stations.iterator ();
     }
 }
 ```
 And then it can be used as
-```php
-$stationList = new StationList();
+```Vala
+var station_list = new StationList ();
 
-$stationList->addStation(new RadioStation(89));
-$stationList->addStation(new RadioStation(101));
-$stationList->addStation(new RadioStation(102));
-$stationList->addStation(new RadioStation(103.2));
+station_list.add_station (new RadioStation (89.0f));
+station_list.add_station (new RadioStation (101.0f));
+station_list.add_station (new RadioStation (102.0f));
+station_list.add_station (new RadioStation (103.2f));
 
-foreach($stationList as $station) {
-    echo $station->getFrequency() . PHP_EOL;
+foreach (RadioStation r in station_list) {
+  print ("%f\n", r.get_frequency ());
 }
 
-$stationList->removeStation(new RadioStation(89)); // Will remove station 89
+station_list.remove_station (new RadioStation (89.0f)); // Will remove station 89
 ```
 
 👽 Mediator
