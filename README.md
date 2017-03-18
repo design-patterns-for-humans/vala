@@ -791,107 +791,91 @@ Wikipedia says
 
 Lets take coffee for example. First of all we have a simple coffee implementing the coffee interface
 
-```php
-interface Coffee
-{
-    public function getCost();
-    public function getDescription();
+```vala
+interface Coffee : Object {
+    public abstract int get_cost ();
+    public abstract string get_description ();
 }
 
-class SimpleCoffee implements Coffee
-{
-    public function getCost()
-    {
+class SimpleCoffee : Object, Coffee {
+    public int get_cost () {
         return 10;
     }
 
-    public function getDescription()
-    {
-        return 'Simple coffee';
+    public string get_description () {
+        return "Simple coffee";
     }
-}
+}   
 ```
 We want to make the code extensible to allow options to modify it if required. Lets make some add-ons (decorators)
-```php
-class MilkCoffee implements Coffee
-{
-    protected $coffee;
+```vala
+class MilkCoffee : Object, Coffee {
+    protected Coffee coffee;
 
-    public function __construct(Coffee $coffee)
-    {
-        $this->coffee = $coffee;
+    public MilkCoffee (Coffee coffee) {
+        this.coffee = coffee;
     }
 
-    public function getCost()
-    {
-        return $this->coffee->getCost() + 2;
+    public int get_cost () {
+        return coffee.get_cost () + 2;
     }
-
-    public function getDescription()
-    {
-        return $this->coffee->getDescription() . ', milk';
+    
+    public string get_description () {
+        return coffee.get_description () + ", milk";
     }
 }
 
-class WhipCoffee implements Coffee
-{
-    protected $coffee;
+class WhipCoffee : Object, Coffee {
+    protected Coffee coffee;
 
-    public function __construct(Coffee $coffee)
-    {
-        $this->coffee = $coffee;
+    public WhipCoffee (Coffee coffee) {
+        this.coffee = coffee;
     }
 
-    public function getCost()
-    {
-        return $this->coffee->getCost() + 5;
+    public int get_cost () {
+        return coffee.get_cost () + 5;
     }
-
-    public function getDescription()
-    {
-        return $this->coffee->getDescription() . ', whip';
+    
+    public string get_description () {
+        return coffee.get_description () + ", whip";
     }
 }
 
-class VanillaCoffee implements Coffee
-{
-    protected $coffee;
+class VanillaCoffee : Object, Coffee {
+    protected Coffee coffee;
 
-    public function __construct(Coffee $coffee)
-    {
-        $this->coffee = $coffee;
+    public VanillaCoffee (Coffee coffee) {
+        this.coffee = coffee;
     }
 
-    public function getCost()
-    {
-        return $this->coffee->getCost() + 3;
+    public int get_cost () {
+        return coffee.get_cost () + 3;
     }
-
-    public function getDescription()
-    {
-        return $this->coffee->getDescription() . ', vanilla';
+    
+    public string get_description () {
+        return coffee.get_description () + ", vanilla";
     }
 }
 ```
 
 Lets make a coffee now
 
-```php
-$someCoffee = new SimpleCoffee();
-echo $someCoffee->getCost(); // 10
-echo $someCoffee->getDescription(); // Simple Coffee
+```vala
+Coffee some_coffee = new SimpleCoffee ();
+print ("%d\n", some_coffee.get_cost ()); // 10
+print ("%s\n", some_coffee.get_description ()); // Simple Coffee
 
-$someCoffee = new MilkCoffee($someCoffee);
-echo $someCoffee->getCost(); // 12
-echo $someCoffee->getDescription(); // Simple Coffee, milk
+some_coffee = new MilkCoffee (some_coffee);
+print ("%d\n", some_coffee.get_cost ()); // 12
+print ("%s\n", some_coffee.get_description ()); // Simple Coffee, milk
 
-$someCoffee = new WhipCoffee($someCoffee);
-echo $someCoffee->getCost(); // 17
-echo $someCoffee->getDescription(); // Simple Coffee, milk, whip
+some_coffee = new WhipCoffee (some_coffee);
+print ("%d\n", some_coffee.get_cost ()); // 17
+print ("%s\n", some_coffee.get_description ()); // Simple Coffee, milk, whip
 
-$someCoffee = new VanillaCoffee($someCoffee);
-echo $someCoffee->getCost(); // 20
-echo $someCoffee->getDescription(); // Simple Coffee, milk, whip, vanilla
+some_coffee = new VanillaCoffee (some_coffee);
+print ("%d\n", some_coffee.get_cost ()); // 20
+print ("%s\n", some_coffee.get_description ()); // Simple Coffee, milk, vanilla
 ```
 
 📦 Facade
