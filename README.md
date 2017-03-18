@@ -695,119 +695,83 @@ Wikipedia says
 
 Taking our employees example from above. Here we have different employee types
 
-```php
-interface Employee
-{
-    public function __construct(string $name, float $salary);
-    public function getName(): string;
-    public function setSalary(float $salary);
-    public function getSalary(): float;
-    public function getRoles(): array;
+```vala
+interface Employee : Object {
+    protected abstract string _name {protected get; protected set;}
+    protected abstract float _salary {protected get; protected set;}
+
+    // no overridable construct
+    
+    public string get_name () {
+        return _name;
+    }
+
+    public void set_salary (float salary) {
+        _salary = salary;
+    }
+
+    public float get_salary () {
+        return _salary;
+    } 
 }
 
-class Developer implements Employee
-{
-    protected $salary;
-    protected $name;
 
-    public function __construct(string $name, float $salary)
-    {
-        $this->name = $name;
-        $this->salary = $salary;
-    }
+class Developer : Object, Employee {
+    protected string _name {protected get; protected set;}
+    protected float _salary {protected get; protected set;}
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function setSalary(float $salary)
-    {
-        $this->salary = $salary;
-    }
-
-    public function getSalary(): float
-    {
-        return $this->salary;
-    }
-
-    public function getRoles(): array
-    {
-        return $this->roles;
+    public Developer (string name, float salary) {
+        _name = name;
+        _salary = salary;
     }
 }
 
-class Designer implements Employee
-{
-    protected $salary;
-    protected $name;
+class Designer : Object, Employee {
+    protected string _name {protected get; protected set;}
+    protected float _salary {protected get; protected set;}
 
-    public function __construct(string $name, float $salary)
-    {
-        $this->name = $name;
-        $this->salary = $salary;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function setSalary(float $salary)
-    {
-        $this->salary = $salary;
-    }
-
-    public function getSalary(): float
-    {
-        return $this->salary;
-    }
-
-    public function getRoles(): array
-    {
-        return $this->roles;
+    public Designer (string name, float salary) {
+        _name = name;
+        _salary = salary;
     }
 }
 ```
 
 Then we have an organization which consists of several different types of employees
 
-```php
-class Organization
-{
-    protected $employees;
+```vala
+class Organization {
+    protected List<Employee> employees;
 
-    public function addEmployee(Employee $employee)
-    {
-        $this->employees[] = $employee;
+    public void add_employee (Employee employee) {
+        employees.append (employee);
     }
 
-    public function getNetSalaries(): float
-    {
-        $netSalary = 0;
+    public float get_net_salaries () {
+        float net_salary = 0;
 
-        foreach ($this->employees as $employee) {
-            $netSalary += $employee->getSalary();
-        }
+        employees.foreach ((employee) => {
+            net_salary += employee.get_salary ();
+        });
 
-        return $netSalary;
+        return net_salary;
     }
 }
 ```
 
 And then it can be used as
 
-```php
+```vala
 // Prepare the employees
-$john = new Developer('John Doe', 12000);
-$jane = new Designer('Jane', 10000);
+var john = new Developer ("John Doe", 12000);
+var jane = new Developer ("Jane", 10000);
 
 // Add them to organization
-$organization = new Organization();
-$organization->addEmployee($john);
-$organization->addEmployee($jane);
+var organization = new Organization ();
+organization.add_employee (john);
+organization.add_employee (jane);
 
-echo "Net salaries: " . $organization->getNetSalaries(); // Net Salaries: 22000
+print ("Net salaries: " + organization.get_net_salaries ().to_string () + "\n");
 ```
 
 ☕ Decorator
