@@ -971,66 +971,62 @@ Wikipedia says
 
 Translating our tea example from above. First of all we have tea types and tea maker
 
-```php
+```vala
 // Anything that will be cached is flyweight.
 // Types of tea here will be flyweights.
-class KarakTea
-{
+using Gee;
+
+class KarakTea {
+
 }
 
 // Acts as a factory and saves the tea
-class TeaMaker
-{
-    protected $availableTea = [];
+class TeaMaker {
+    protected HashMap<string, KarakTea> available_tea = new HashMap<string, KarakTea> ();
 
-    public function make($preference)
-    {
-        if (empty($this->availableTea[$preference])) {
-            $this->availableTea[$preference] = new KarakTea();
+    public KarakTea make (string preference) {
+        if (!available_tea.has_key (preference)) {
+            available_tea[preference] = new KarakTea ();
         }
 
-        return $this->availableTea[$preference];
+        return available_tea[preference];
     }
 }
 ```
 
 Then we have the `TeaShop` which takes orders and serves them
 
-```php
-class TeaShop
-{
-    protected $orders;
-    protected $teaMaker;
+```vala
+class TeaShop {
+    protected HashMap<int, KarakTea> orders = new HashMap<int, KarakTea> ();
+    protected TeaMaker tea_maker;
 
-    public function __construct(TeaMaker $teaMaker)
-    {
-        $this->teaMaker = $teaMaker;
+    public TeaShop (TeaMaker tea_maker) {
+        this.tea_maker = tea_maker;
     }
 
-    public function takeOrder(string $teaType, int $table)
-    {
-        $this->orders[$table] = $this->teaMaker->make($teaType);
+    public void take_order (string tea_type, int table) {
+        orders[table] = tea_maker.make (tea_type); 
     }
 
-    public function serve()
-    {
-        foreach ($this->orders as $table => $tea) {
-            echo "Serving tea to table# " . $table;
+    public void serve () {
+        foreach (int table in orders.keys) {
+            print ("Serving tea to table# %d\n", table);
         }
     }
 }
 ```
 And it can be used as below
 
-```php
-$teaMaker = new TeaMaker();
-$shop = new TeaShop($teaMaker);
+```vala
+var tea_maker = new TeaMaker ();
+var shop = new TeaShop (tea_maker);
 
-$shop->takeOrder('less sugar', 1);
-$shop->takeOrder('more milk', 2);
-$shop->takeOrder('without sugar', 5);
+shop.take_order ("less sugar", 1);
+shop.take_order ("more milk", 2);
+shop.take_order ("without sugar", 5);
 
-$shop->serve();
+shop.serve ();
 // Serving tea to table# 1
 // Serving tea to table# 2
 // Serving tea to table# 5
