@@ -1438,56 +1438,52 @@ Here is the simplest example of a chat room (i.e. mediator) with users (i.e. col
 
 First of all, we have the mediator i.e. the chat room
 
-```php
-interface ChatRoomMediator 
-{
-    public function showMessage(User $user, string $message);
+```vala
+interface ChatRoomMediator : Object {
+    public abstract void show_message (User user, string message);
 }
 
 // Mediator
-class ChatRoom implements ChatRoomMediator
-{
-    public function showMessage(User $user, string $message)
-    {
-        $time = date('M d, y H:i');
-        $sender = $user->getName();
-
-        echo $time . '[' . $sender . ']:' . $message;
+class ChatRoom : Object, ChatRoomMediator {
+    public void show_message (User user, string message) {
+        var time = new DateTime.now_local ();
+        var sender = user.get_name ();
+        print ("%s [%s]:%s\n", time.to_string (), sender, message);
     }
 }
 ```
 
 Then we have our users i.e. colleagues
-```php
+```vala
 class User {
-    protected $name;
-    protected $chatMediator;
+    protected string name;
+    protected ChatRoomMediator chat_mediator;
 
-    public function __construct(string $name, ChatRoomMediator $chatMediator) {
-        $this->name = $name;
-        $this->chatMediator = $chatMediator;
+    public User (string name, ChatRoomMediator chat_mediator) {
+        this.name = name;
+        this.chat_mediator = chat_mediator;
     }
 
-    public function getName() {
-        return $this->name;
+    public string get_name () {
+        return name;
     }
 
-    public function send($message) {
-        $this->chatMediator->showMessage($this, $message);
+    public void send (string message) {
+        chat_mediator.show_message (this, message);
     }
 }
 ```
 And the usage
-```php
-$mediator = new ChatRoom();
+```vala
+var mediator = new ChatRoom ();
 
-$john = new User('John Doe', $mediator);
-$jane = new User('Jane Doe', $mediator);
+var john = new User ("John Doe", mediator);
+var jane = new User ("Jane Dow", mediator);
 
-$john->send('Hi there!');
-$jane->send('Hey!');
+john.send ("Hi there!");
+jane.send ("Hey!");
 
-// Output will be
+// Output will be similar to
 // Feb 14, 10:58 [John]: Hi there!
 // Feb 14, 10:58 [Jane]: Hey!
 ```
