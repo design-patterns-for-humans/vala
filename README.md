@@ -390,7 +390,7 @@ var burger = (new BurgerBuilder (14))
 
 When there could be several flavors of an object and to avoid the constructor telescoping. The key difference from the factory pattern is that; factory pattern is to be used when the creation is a one step process while builder pattern is to be used when the creation is a multi step process.
 
-🐑 Prototype (CONTROVERSIAL AND NO STANDARD CLONE METHOD IN VALA)
+🐑 Prototype
 ------------
 Real world example
 > Remember dolly? The sheep that was cloned! Lets not get into the details but the key point here is that it is all about cloning
@@ -407,53 +407,52 @@ In short, it allows you to create a copy of an existing object and modify it to 
 
 In PHP, it can be easily done using `clone`
 
-```php
-class Sheep
-{
-    protected $name;
-    protected $category;
+```vala
+class Sheep {
+    protected string name;
+    protected string category;
 
-    public function __construct(string $name, string $category = 'Mountain Sheep')
-    {
-        $this->name = $name;
-        $this->category = $category;
+    public Sheep (string name, string category = "Mountain Sheep") {
+        this.name = name;
+        this.category = category;
     }
 
-    public function setName(string $name)
-    {
-        $this->name = $name;
+    public void set_name (string name) {
+        this.name = name;
     }
 
-    public function getName()
-    {
-        return $this->name;
+    public string get_name () {
+        return name;
     }
 
-    public function setCategory(string $category)
-    {
-        $this->category = $category;
+    public void set_category (string category) {
+        this.category = category;
     }
 
-    public function getCategory()
-    {
-        return $this->category;
+    public string get_category () {
+        return category;
+    }
+
+    // No Object clone method, lets implement a clone method
+    public Sheep clone () {
+        return new Sheep (name, category);
     }
 }
 ```
 Then it can be cloned like below
-```php
-$original = new Sheep('Jolly');
-echo $original->getName(); // Jolly
-echo $original->getCategory(); // Mountain Sheep
+```vala
+    var original = new Sheep ("Jolly");
+    print ("%s\n", original.get_name ()); // Jolly
+    print ("%s\n", original.get_category ()); // Mountain Sheep
 
 // Clone and modify what is required
-$cloned = clone $original;
-$cloned->setName('Dolly');
-echo $cloned->getName(); // Dolly
-echo $cloned->getCategory(); // Mountain sheep
+    var cloned = original.clone ();
+    cloned.set_name ("Dolly");
+    print ("%s\n", cloned.get_name ()); // Dolly
+    print ("%s\n", cloned.get_category ()); // Mountain sheep
 ```
 
-Also you could use the magic method `__clone` to modify the cloning behavior.
+Also you could use the magic method `__clone` to modify the cloning behavior. [Not valid in Vala]
 
 **When to use?**
 
