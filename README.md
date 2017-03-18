@@ -1947,80 +1947,77 @@ Wikipedia says
 Imagine we have a build tool that helps us test, lint, build, generate build reports (i.e. code coverage reports, linting report etc) and deploy our app on the test server.
 
 First of all we have our base class that specifies the skeleton for the build algorithm
-```php
-abstract class Builder
-{
+```vala
+abstract class Builder {
 
     // Template method
-    final public function build()
+    public void build()
     {
-        $this->test();
-        $this->lint();
-        $this->assemble();
-        $this->deploy();
+        this.test();
+        this.lint();
+        this.assemble();
+        this.deploy();
     }
 
-    abstract public function test();
-    abstract public function lint();
-    abstract public function assemble();
-    abstract public function deploy();
+    public abstract void test();
+    public abstract void lint();
+    public abstract void assemble();
+    public abstract void deploy();
 }
 ```
 
 Then we can have our implementations
 
-```php
-class AndroidBuilder extends Builder
-{
-    public function test()
+```vala
+class AndroidBuilder : Builder {
+    public override void test()
     {
-        echo 'Running android tests';
+        print ("Running android tests\n");
     }
 
-    public function lint()
+    public override void lint()
     {
-        echo 'Linting the android code';
+        print ("Linting the android code\n");
     }
 
-    public function assemble()
+    public override void assemble()
     {
-        echo 'Assembling the android build';
+        print ("Assembling the android build\n");
     }
 
-    public function deploy()
+    public override void deploy()
     {
-        echo 'Deploying android build to server';
+        print ("Deploying android build to server\n");
     }
 }
 
-class IosBuilder extends Builder
-{
-    public function test()
+class IosBuilder : Builder {
+    public override void test()
     {
-        echo 'Running ios tests';
+        print ("Running ios tests\n");
     }
 
-    public function lint()
+    public override void lint()
     {
-        echo 'Linting the ios code';
+        print ("Linting the ios code\n");
     }
 
-    public function assemble()
+    public override void assemble()
     {
-        echo 'Assembling the ios build';
+        print ("Assembling the ios build\n");
     }
 
-    public function deploy()
+    public override void deploy()
     {
-        echo 'Deploying ios build to server';
+        print ("Deploying ios build to server\n");
     }
 }
 ```
 And then it can be used as
 
-```php
-$androidBuilder = new AndroidBuilder();
-$androidBuilder->build();
+```vala
+var android_builder = new AndroidBuilder();
+android_builder.build ();
 
 // Output:
 // Running android tests
@@ -2028,8 +2025,8 @@ $androidBuilder->build();
 // Assembling the android build
 // Deploying android build to server
 
-$iosBuilder = new IosBuilder();
-$iosBuilder->build();
+var ios_builder = new IosBuilder ();
+ios_builder.build ();
 
 // Output:
 // Running ios tests
