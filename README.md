@@ -894,77 +894,65 @@ Wikipedia says
 
 Taking our computer example from above. Here we have the computer class
 
-```php
-class Computer
-{
-    public function getElectricShock()
-    {
-        echo "Ouch!";
+```vala
+class Computer {
+    public void get_electric_shock () {
+        print ("Ouch!\n");
     }
 
-    public function makeSound()
-    {
-        echo "Beep beep!";
+    public void make_sound () {
+        print ("Beep beep!\n");
     }
 
-    public function showLoadingScreen()
-    {
-        echo "Loading..";
+    public void show_loading_screen () {
+        print ("Loading...\n");
     }
 
-    public function bam()
-    {
-        echo "Ready to be used!";
+    public void bam () {
+        print ("Ready to be used!\n");
     }
 
-    public function closeEverything()
-    {
-        echo "Bup bup bup buzzzz!";
+    public void close_everything () {
+        print ("Bup bup bup buzzzz!\n");
     }
 
-    public function sooth()
-    {
-        echo "Zzzzz";
+    public void sooth () {
+        print ("Zzzzz\n");
     }
 
-    public function pullCurrent()
-    {
-        echo "Haaah!";
+    public void pull_current () {
+        print ("Haaah!\n");
     }
 }
 ```
 Here we have the facade
-```php
-class ComputerFacade
-{
-    protected $computer;
+```vala
+class ComputerFacade {
+    protected Computer computer;
 
-    public function __construct(Computer $computer)
-    {
-        $this->computer = $computer;
+    public ComputerFacade (Computer computer) {
+        this.computer = computer;
     }
 
-    public function turnOn()
-    {
-        $this->computer->getElectricShock();
-        $this->computer->makeSound();
-        $this->computer->showLoadingScreen();
-        $this->computer->bam();
+    public void turn_on () {
+        computer.get_electric_shock ();
+        computer.make_sound ();
+        computer.show_loading_screen ();
+        computer.bam ();
     }
 
-    public function turnOff()
-    {
-        $this->computer->closeEverything();
-        $this->computer->pullCurrent();
-        $this->computer->sooth();
+    public void turn_off () {
+        computer.close_everything ();
+        computer.pull_current ();
+        computer.sooth ();
     }
 }
 ```
 Now to use the facade
-```php
-$computer = new ComputerFacade(new Computer());
-$computer->turnOn(); // Ouch! Beep beep! Loading.. Ready to be used!
-$computer->turnOff(); // Bup bup buzzz! Haah! Zzzzz
+```vala
+    var computer = new ComputerFacade (new Computer());
+    computer.turn_on (); // Ouch! Beep beep! Loading.. Ready to be used!
+    computer.turn_off (); // Bup bup buzzz! Haah! Zzzzz
 ```
 
 🍃 Flyweight
