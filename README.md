@@ -1791,61 +1791,54 @@ Wikipedia says
 
 Translating our example from above. First of all we have our strategy interface and different strategy implementations
 
-```php
-interface SortStrategy
-{
-    public function sort(array $dataset): array;
+```vala
+interface SortStrategy : Object {
+    public abstract int[] sort (int[] dataset);
 }
 
-class BubbleSortStrategy implements SortStrategy
-{
-    public function sort(array $dataset): array
-    {
-        echo "Sorting using bubble sort";
-
-        // Do sorting
-        return $dataset;
+class BubbleSortStrategy : Object, SortStrategy {
+    public int[] sort (int[] dataset) {
+        print ("Sorting using bubble sort\n");
+        
+        //do sorting
+        return dataset;
     }
 }
 
-class QuickSortStrategy implements SortStrategy
-{
-    public function sort(array $dataset): array
-    {
-        echo "Sorting using quick sort";
-
-        // Do sorting
-        return $dataset;
+class QuickSortStrategy : Object, SortStrategy {
+    public int[] sort (int[] dataset) {
+        print ("Sorting using quick sort\n");
+        
+        //do sorting
+        return dataset;
     }
 }
 ```
 
 And then we have our client that is going to use any strategy
-```php
-class Sorter
-{
-    protected $sorter;
+```vala
+class Sorter {
+    protected SortStrategy sorter;
 
-    public function __construct(SortStrategy $sorter)
-    {
-        $this->sorter = $sorter;
+    public Sorter (SortStrategy sorter) {
+        this.sorter = sorter;
     }
-
-    public function sort(array $dataset): array
-    {
-        return $this->sorter->sort($dataset);
+    
+    public int[] sort (int[] dataset) {
+        return sorter.sort (dataset);
     }
 }
 ```
 And it can be used as
-```php
-$dataset = [1, 5, 4, 3, 2, 8];
+```vala
+int[] dataset = {1, 5, 4, 3 ,2, 8};
 
-$sorter = new Sorter(new BubbleSortStrategy());
-$sorter->sort($dataset); // Output : Sorting using bubble sort
+var sorter = new Sorter (new BubbleSortStrategy ());
+sorter.sort (dataset); // output : sorting using bubble sort
 
-$sorter = new Sorter(new QuickSortStrategy());
-$sorter->sort($dataset); // Output : Sorting using quick sort
+
+sorter = new Sorter (new QuickSortStrategy ());
+sorter.sort (dataset); // Output : Sorting using quick sort
 ```
 
 💢 State
