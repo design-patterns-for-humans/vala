@@ -1669,128 +1669,110 @@ Wikipedia says
 
 Let's take an example of a zoo simulation where we have several different kinds of animals and we have to make them Sound. Let's translate this using visitor pattern
 
-```php
+```vala
 // Visitee
-interface Animal
-{
-    public function accept(AnimalOperation $operation);
+interface Animal {
+    public abstract void accept (AnimalOperation operation);
 }
 
 // Visitor
-interface AnimalOperation
-{
-    public function visitMonkey(Monkey $monkey);
-    public function visitLion(Lion $lion);
-    public function visitDolphin(Dolphin $dolphin);
+interface AnimalOperation {
+    public abstract void visit_monkey (Monkey monkey);
+    public abstract void visit_lion (Lion lion);
+    public abstract void visit_dolphin (Dolphin dolphin);
 }
 ```
 Then we have our implementations for the animals
-```php
-class Monkey implements Animal
-{
-    public function shout()
-    {
-        echo 'Ooh oo aa aa!';
+```vala
+class Monkey : Animal {
+    public void shout () {
+        print ("Ooh oo aa aa!\n"); 
     }
 
-    public function accept(AnimalOperation $operation)
-    {
-        $operation->visitMonkey($this);
+    public void accept (AnimalOperation operation) {
+        operation.visit_monkey (this);
     }
 }
 
-class Lion implements Animal
-{
-    public function roar()
-    {
-        echo 'Roaaar!';
+class Lion : Animal {
+    public void roar () {
+        print ("Roaaar !\n"); 
     }
 
-    public function accept(AnimalOperation $operation)
-    {
-        $operation->visitLion($this);
+    public void accept (AnimalOperation operation) {
+        operation.visit_lion (this);
     }
 }
 
-class Dolphin implements Animal
-{
-    public function speak()
-    {
-        echo 'Tuut tuttu tuutt!';
+class Dolphin : Animal {
+    public void speak () {
+        print ("Tuut tuttu tuutt!\n"); 
     }
 
-    public function accept(AnimalOperation $operation)
-    {
-        $operation->visitDolphin($this);
+    public void accept (AnimalOperation operation) {
+        operation.visit_dolphin (this);
     }
 }
 ```
 Let's implement our visitor
-```php
-class Speak implements AnimalOperation
-{
-    public function visitMonkey(Monkey $monkey)
-    {
-        $monkey->shout();
+```vala
+class Speak : AnimalOperation {
+    public void visit_monkey (Monkey monkey) {
+        monkey.shout ();
     }
 
-    public function visitLion(Lion $lion)
-    {
-        $lion->roar();
+    public void visit_lion (Lion lion) {
+        lion.roar ();
     }
 
-    public function visitDolphin(Dolphin $dolphin)
-    {
-        $dolphin->speak();
+    public void visit_dolphin (Dolphin dolphin) {
+        dolphin.speak ();
     }
 }
 ```
 
 And then it can be used as
-```php
-$monkey = new Monkey();
-$lion = new Lion();
-$dolphin = new Dolphin();
+```vala
+    var monkey = new Monkey ();
+    var lion = new Lion ();
+    var dolphin = new Dolphin ();
 
-$speak = new Speak();
+    var speak = new Speak ();
 
-$monkey->accept($speak);    // Ooh oo aa aa!    
-$lion->accept($speak);      // Roaaar!
-$dolphin->accept($speak);   // Tuut tutt tuutt!
+    monkey.accept (speak);  // Ooh oo aa aa! 
+    lion.accept (speak);    // Roaaar!
+    dolphin.accept (speak); // Tuut tutt tuutt!
 ```
 We could have done this simply by having a inheritance hierarchy for the animals but then we would have to modify the animals whenever we would have to add new actions to animals. But now we will not have to change them. For example, let's say we are asked to add the jump behavior to the animals, we can simply add that by creating a new visitor i.e.
 
-```php
-class Jump implements AnimalOperation
-{
-    public function visitMonkey(Monkey $monkey)
-    {
-        echo 'Jumped 20 feet high! on to the tree!';
+```vala
+class Jump : AnimalOperation {
+    public void visit_monkey (Monkey monkey) {
+        print ("Jumped 20 feet high! on to the tree!\n");
     }
 
-    public function visitLion(Lion $lion)
-    {
-        echo 'Jumped 7 feet! Back on the ground!';
+    public void visit_lion (Lion lion) {
+        print ("Jumped 7 feet! Back on the ground!\n");
     }
 
-    public function visitDolphin(Dolphin $dolphin)
-    {
-        echo 'Walked on water a little and disappeared';
+    public void visit_dolphin (Dolphin dolphin) {
+        print ("Walked on water a little and disappeared\n");
     }
 }
 ```
 And for the usage
-```php
-$jump = new Jump();
+```vala
+var jump = new Jump ();
 
-$monkey->accept($speak);   // Ooh oo aa aa!
-$monkey->accept($jump);    // Jumped 20 feet high! on to the tree!
+monkey.accept (speak);  // Ooh oo aa aa! 
+monkey.accept (jump);   // Jumped 20 feet high! on to the tree!
 
-$lion->accept($speak);     // Roaaar!
-$lion->accept($jump);      // Jumped 7 feet! Back on the ground!
 
-$dolphin->accept($speak);  // Tuut tutt tuutt!
-$dolphin->accept($jump);   // Walked on water a little and disappeared
+lion.accept (speak);    // Roaaar!
+lion.accept (jump);     // Jumped 7 feet! Back on the ground!
+
+dolphin.accept (speak); // Tuut tutt tuutt!
+dolphin.accept (jump);  // Walked on water a little and disappeared
 ```
 
 💡 Strategy
