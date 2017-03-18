@@ -1193,8 +1193,8 @@ Now let's prepare the chain using the links defined above (i.e. Bank, Paypal, Bi
 //      If bank can't pay then paypal
 //      If paypal can't pay then bit coin
 
-var bank = new Bank (100); 		// Bank with balance 100
-var paypal = new Paypal (200); 	// Paypal with balance 200
+var bank = new Bank (100);       // Bank with balance 100
+var paypal = new Paypal (200);   // Paypal with balance 200
 var bitcoin = new Bitcoin (300); // Bitcoin with balance 300
 
 bank.set_next (paypal);
@@ -1583,75 +1583,71 @@ Wikipedia says
 **Programmatic example**
 
 Translating our example from above. First of all we have job seekers that need to be notified for a job posting
-```php
-class JobPost
-{
-    protected $title;
+```vala
+interface Observer : Object {
+}
 
-    public function __construct(string $title)
-    {
-        $this->title = $title;
+interface Observable {
+}
+
+class JobPost {
+    protected string title;
+
+    public JobPost (string title) {
+        this.title = title;
     }
 
-    public function getTitle()
-    {
-        return $this->title;
+    public string get_title () {
+        return title;
     }
 }
 
-class JobSeeker implements Observer
-{
-    protected $name;
+class JobSeeker : Object, Observer {
+    protected string name;
 
-    public function __construct(string $name)
-    {
-        $this->name = $name;
+    public JobSeeker (string name) {
+        this.name = name;
     }
 
-    public function onJobPosted(JobPost $job)
-    {
+    public void on_job_posted (JobPost job) {
         // Do something with the job posting
-        echo 'Hi ' . $this->name . '! New job posted: '. $job->getTitle();
+        print ("Hi %s! New job posted: %s\n", name, job.get_title ()); 
     }
 }
 ```
 Then we have our job postings to which the job seekers will subscribe
-```php
-class JobPostings implements Observable
-{
-    protected $observers = [];
+```vala
+class JobPostings : Observable {
+    protected ArrayList<Observer> observers = new ArrayList<Observer> ();
 
-    protected function notify(JobPost $jobPosting)
-    {
-        foreach ($this->observers as $observer) {
-            $observer->onJobPosted($jobPosting);
+    public void notify (JobPost job_posting) {
+        foreach (Observer observer in observers) {
+            ((JobSeeker) observer).on_job_posted (job_posting);
         }
     }
 
-    public function attach(Observer $observer)
-    {
-        $this->observers[] = $observer;
+    public void attach (Observer observer) {
+        observers.add (observer);
     }
 
-    public function addJob(JobPost $jobPosting)
-    {
-        $this->notify($jobPosting);
+    public void add_job (JobPost job_posting) {
+        notify (job_posting);
     }
 }
 ```
 Then it can be used as
-```php
+```vala
 // Create subscribers
-$johnDoe = new JobSeeker('John Doe');
-$janeDoe = new JobSeeker('Jane Doe');
+var john_doe = new JobSeeker ("John Doe");
+var jane_doe = new JobSeeker ("Jane Doe");
 
 // Create publisher and attach subscribers
-$jobPostings = new JobPostings();
-$jobPostings->attach($johnDoe);
-$jobPostings->attach($janeDoe);
+var job_postings = new JobPostings ();
+job_postings.attach (john_doe);
+job_postings.attach (jane_doe);
 
 // Add a new job and see if subscribers get notified
-$jobPostings->addJob(new JobPost('Software Engineer'));
+job_postings.add_job (new JobPost ("Software Engineer"));
 
 // Output
 // Hi John Doe! New job posted: Software Engineer
