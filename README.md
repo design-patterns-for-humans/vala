@@ -1348,7 +1348,7 @@ Then we have our iterator
 ```vala
 using Gee; 
 
-class StationList : Object, Traversable <RadioStation>, Iterable<RadioStation> {
+class StationList : Object, Traversable<RadioStation>, Iterable<RadioStation> {
     protected ArrayList<RadioStation> stations = new ArrayList<RadioStation> ();
     
     public delegate bool ForallFunc (owned RadioStation r);
