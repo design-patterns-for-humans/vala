@@ -27,7 +27,7 @@ Wikipedia describes them as
 - Do not try to force them; bad things are supposed to happen, if done so. Keep in mind that design patterns are solutions **to** problems, not solutions **finding** problems; so don't overthink.
 - If used in a correct place in a correct manner, they can prove to be a savior; or else they can result in a horrible mess of a code.
 
-> Also note that the code samples below are in PHP-7, however this shouldn't stop you because the concepts are same anyways. Plus the **support for other languages is underway**.
+> Also note that the code samples below are in Vala, however this shouldn't stop you because the concepts are same anyways. Plus the **support for other languages is underway**.
 
 Types of Design Patterns
 -----------------
@@ -406,7 +406,7 @@ In short, it allows you to create a copy of an existing object and modify it to 
 
 **Programmatic Example**
 
-In PHP, it can be easily done using `clone`
+In Vala, there's no 'native', generic, shallow or deep, 'clone' method and this topic is a bit controversial, so we just implement a clone method that returns another instance of the same class with duplicated properties.
 
 ```vala
 class Sheep {
@@ -1328,7 +1328,7 @@ Wikipedia says
 
 **Programmatic example**
 
-In PHP it is quite easy to implement using SPL (Standard PHP Library). Translating our radio stations example from above. First of all we have `RadioStation`
+In Vala we'll use Libgee which implements collections and derivatives, includind iterators. Translating our radio stations example from above. First of all we have `RadioStation`
 
 ```vala
 class RadioStation {
