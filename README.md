@@ -475,19 +475,25 @@ Singleton pattern is actually considered an anti-pattern and overuse of it shoul
 To create a singleton, make the constructor private, disable cloning, disable extension and create a static variable to house the instance
 ```vala
 public class President : Object {
-    static President? instance;
+    static President? _instance;
  
     // Private constructor
     private President () {
  
     }
  
-    // Public constructor
-    public static President get_instance () {
-        if (instance == null) {
-            instance = new President ();
+    // Public instance read-only property
+    public static President instance {
+        get{
+            if(_instance == null){
+                lock(_instance) {
+                    if(_instance == null) {
+                        _instance = new President();
+                    }
+                }
+            }
+            return _instance;
         }
-        return instance;
     }
 
     // No default clone and unserialize methods.
@@ -495,8 +501,8 @@ public class President : Object {
 ```
 Then in order to use
 ```vala
- President a = President.get_instance ();
- President b = President.get_instance ();
+ President a = President.instance;
+ President b = President.instance;
 
  print ((a == b).to_string () + "\n"); // true
 ```
