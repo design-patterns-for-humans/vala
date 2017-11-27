@@ -1349,8 +1349,6 @@ using Gee;
 class StationList : Object, Traversable<RadioStation>, Iterable<RadioStation> {
     protected ArrayList<RadioStation> stations = new ArrayList<RadioStation> ();
     
-    public delegate bool ForallFunc (owned RadioStation r);
-
     public void add_station (RadioStation station) {
         stations.add (station);
     }
@@ -1374,9 +1372,8 @@ class StationList : Object, Traversable<RadioStation>, Iterable<RadioStation> {
         get { return typeof (RadioStation); }
     }
 
-    public bool @foreach (ForallFunc f) {
-        // ... 
-        return true;
+    public bool @foreach (ForallFunc<RadioStation> f) {
+        return iterator ().foreach (f); 
     }
 
     public Iterator<RadioStation> iterator () {
