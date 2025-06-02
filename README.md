@@ -473,7 +473,7 @@ Singleton pattern is actually considered an anti-pattern and overuse of it shoul
 **Programmatic Example**
 
 To create a singleton there are two main ways to do it when targeting GLib (the stanard target),
-thu first is to use the `[SingleInstance]` attributes:
+the first is to use the `[SingleInstance]` attributes:
 
 ```vala
 [SingleInstance]
