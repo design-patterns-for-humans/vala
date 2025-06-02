@@ -496,7 +496,10 @@ public class President : Object {
             return new President ();
         });
     }
+
+    // No default clone and unserialize methods.
 }
+```
 
 **Programmatic Example without GLib**
 
