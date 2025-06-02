@@ -470,7 +470,35 @@ Wikipedia says
 
 Singleton pattern is actually considered an anti-pattern and overuse of it should be avoided. It is not necessarily bad and could have some valid use-cases but should be used with caution because it introduces a global state in your application and change to it in one place could affect in the other areas and it could become pretty difficult to debug. The other bad thing about them is it makes your code tightly coupled plus it mocking the singleton could be difficult.
 
-**Programmatic Example**
+**Progromatic Example**
+To create a singleton there are two main ways to do it when targeting GLib (the stanard target),
+thu first is to use the `[SingleInstance]` attributes:
+
+```vala
+[SingleInstance]
+public class President : Object  {
+    // No default clone and unserialize methods.
+}
+```
+
+The other way is to use `GLib.Once`:
+
+```vala
+public class President : Object {
+    private static GLib.Once<President> instance;
+
+    private President () {
+
+    }
+
+    public static President get_instance () {
+        return instance.once (() => {
+            return new President ();
+        });
+    }
+}
+
+**Programmatic Example without GLib**
 
 To create a singleton, make the constructor private, disable cloning, disable extension and create a static variable to house the instance
 ```vala
