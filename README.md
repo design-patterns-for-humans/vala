@@ -472,8 +472,8 @@ Singleton pattern is actually considered an anti-pattern and overuse of it shoul
 
 **Programmatic Example**
 
-To create a singleton there are two main ways to do it when targeting GLib (the stanard target),
-the first is to use the `[SingleInstance]` attributes:
+When targeting GLib (the standard target), there are two ways of creating a singleton.
+The first one is using the `[SingleInstance]` attribute:
 
 ```vala
 [SingleInstance]
@@ -482,7 +482,7 @@ public class President : Object  {
 }
 ```
 
-The other way is to use `GLib.Once`:
+The second one is to use `GLib.Once`:
 
 ```vala
 public class President : Object {
